@@ -3,9 +3,9 @@ game 'gta5'
 lua54 'yes'
 
 author 'HenkW'
-description 'Simple weed script'
+description 'Simple coke script'
 
-version '1.1.9'
+version '1.0.0'
 
 shared_script '@es_extended/imports.lua'
 
