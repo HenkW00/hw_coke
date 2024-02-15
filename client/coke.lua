@@ -1,5 +1,5 @@
-local spawnedWeeds = 0
-local weedPlants = {}
+local spawnedCokes = 0
+local cokePlants = {}
 local isPickingUp, isProcessing = false, false
 
 CreateThread(function() 
@@ -7,8 +7,8 @@ CreateThread(function()
 		Wait(700)
 		local coords = GetEntityCoords(PlayerPedId())
 
-		if #(coords - Config.CircleZones.WeedField.coords) < 50 then
-			SpawnWeedPlants()
+		if #(coords - Config.CircleZones.CokeField.coords) < 50 then
+			SpawnCokePlants()
 		end
 	end
 end)
@@ -19,24 +19,24 @@ CreateThread(function()
 		local playerPed = PlayerPedId()
 		local coords = GetEntityCoords(playerPed)
 
-		if #(coords - Config.CircleZones.WeedProcessing.coords) < 1 then
+		if #(coords - Config.CircleZones.CokeProcessing.coords) < 1 then
 			wait = 2
 			if not isProcessing then
-				ESX.ShowHelpNotification(TranslateCap('weed_processprompt'))
+				ESX.ShowHelpNotification(TranslateCap('coke_processprompt'))
 			end
 
 			if IsControlJustReleased(0, 38) and not isProcessing then
-				ESX.TriggerServerCallback('hw_weed:cannabis_count', function(xCannabis)
+				ESX.TriggerServerCallback('hw_coke:coke_count', function(xCoke)
 					if Config.LicenseEnable then
 						ESX.TriggerServerCallback('esx_license:checkLicense', function(hasProcessingLicense)
 							if hasProcessingLicense then
-								ProcessWeed(xCannabis)
+								ProcessCoke(xCoke)
 							else
-								OpenBuyLicenseMenu('weed_processing')
+								OpenBuyLicenseMenu('coke_processing')
 							end
-						end, GetPlayerServerId(PlayerId()), 'weed_processing')
+						end, GetPlayerServerId(PlayerId()), 'coke_processing')
 					else
-						ProcessWeed(xCannabis)
+						ProcessCoke(xCoke)
 					end
 				end)
 			end
@@ -45,24 +45,24 @@ CreateThread(function()
 	end
 end)
 
-function ProcessWeed(xCannabis)
+function ProcessCoke(xCoke)
 	isProcessing = true
-	ESX.ShowNotification(TranslateCap('weed_processingstarted'))
-  TriggerServerEvent('hw_weed:processCannabis')
+	ESX.ShowNotification(TranslateCap('coke_processingstarted'))
+  TriggerServerEvent('hw_coke:processCoke')
 	if(xCannabis <= 3) then
 		xCannabis = 0
 	end
-  local timeLeft = (Config.Delays.WeedProcessing * xCannabis) / 1000
+  local timeLeft = (Config.Delays.CokeProcessing * xCannabis) / 1000
 	local playerPed = PlayerPedId()
 
 	while timeLeft > 0 do
 		Wait(1000)
 		timeLeft = timeLeft - 1
 
-		if #(GetEntityCoords(playerPed) - Config.CircleZones.WeedProcessing.coords) > 4 then
-			ESX.ShowNotification(TranslateCap('weed_processingtoofar'))
-			TriggerServerEvent('hw_weed:cancelProcessing')
-			TriggerServerEvent('hw_weed:outofbound')
+		if #(GetEntityCoords(playerPed) - Config.CircleZones.CokeProcessing.coords) > 4 then
+			ESX.ShowNotification(TranslateCap('coke_processingtoofar'))
+			TriggerServerEvent('hw_coke:cancelProcessing')
+			TriggerServerEvent('hw_coke:outofbound')
 			break
 		end
 	end
@@ -78,22 +78,22 @@ CreateThread(function()
 		local coords = GetEntityCoords(playerPed)
 		local nearbyObject, nearbyID
 
-		for i=1, #weedPlants, 1 do
-			if #(coords - GetEntityCoords(weedPlants[i])) < 1.5 then
-				nearbyObject, nearbyID = weedPlants[i], i
+		for i=1, #cokePlants, 1 do
+			if #(coords - GetEntityCoords(cokePlants[i])) < 1.5 then
+				nearbyObject, nearbyID = cokePlants[i], i
 			end
 		end
 
 		if nearbyObject and IsPedOnFoot(playerPed) then
 			Sleep = 0
 			if not isPickingUp then
-				ESX.ShowHelpNotification(TranslateCap('weed_pickupprompt'))
+				ESX.ShowHelpNotification(TranslateCap('coke_pickupprompt'))
 			end
 
 			if IsControlJustReleased(0, 38) and not isPickingUp then
 				isPickingUp = true
 
-				ESX.TriggerServerCallback('hw_weed:canPickUp', function(canPickUp)
+				ESX.TriggerServerCallback('hw_coke:canPickUp', function(canPickUp)
 					if canPickUp then
 						TaskStartScenarioInPlace(playerPed, 'world_human_gardener_plant', 0, false)
 
@@ -103,16 +103,16 @@ CreateThread(function()
 		
 						ESX.Game.DeleteObject(nearbyObject)
 		
-						table.remove(weedPlants, nearbyID)
-						spawnedWeeds = spawnedWeeds - 1
+						table.remove(cokePlants, nearbyID)
+						spawnedCokes = spawnedCokes - 1
 		
-						TriggerServerEvent('hw_weed:pickedUpCannabis')
+						TriggerServerEvent('hw_coke:pickedUpCannabis')
 					else
-						ESX.ShowNotification(TranslateCap('weed_inventoryfull'))
+						ESX.ShowNotification(TranslateCap('coke_inventoryfull'))
 					end
 
 					isPickingUp = false
-				end, 'cannabis')
+				end, 'coke')
 			end
 		end
 	Wait(Sleep)
@@ -121,38 +121,38 @@ end)
 
 AddEventHandler('onResourceStop', function(resource)
 	if resource == GetCurrentResourceName() then
-		for k, v in pairs(weedPlants) do
+		for k, v in pairs(cokePlants) do
 			ESX.Game.DeleteObject(v)
 		end
 	end
 end)
 
-function SpawnWeedPlants()
-	while spawnedWeeds < 25 do
+function SpawnCokePlants()
+	while spawnedCokes < 25 do
 		Wait(0)
-		local weedCoords = GenerateWeedCoords()
+		local cokeCoords = GenerateCokeCoords()
 
-		ESX.Game.SpawnLocalObject('prop_weed_02', weedCoords, function(obj)
+		ESX.Game.SpawnLocalObject('prop_weed_02', cokeCoords, function(obj)
 			PlaceObjectOnGroundProperly(obj)
 			FreezeEntityPosition(obj, true)
 
-			table.insert(weedPlants, obj)
-			spawnedWeeds = spawnedWeeds + 1
+			table.insert(cokePlants, obj)
+			spawnedCokes = spawnedCokes + 1
 		end)
 	end
 end
 
-function ValidateWeedCoord(plantCoord)
-	if spawnedWeeds > 0 then
+function ValidateCokeCoord(plantCoord)
+	if spawnedCokes > 0 then
 		local validate = true
 
-		for k, v in pairs(weedPlants) do
+		for k, v in pairs(cokePlants) do
 			if #(plantCoord - GetEntityCoords(v)) < 5 then
 				validate = false
 			end
 		end
 
-		if #(plantCoord - Config.CircleZones.WeedField.coords) > 50 then
+		if #(plantCoord - Config.CircleZones.CokeField.coords) > 50 then
 			validate = false
 		end
 
@@ -162,11 +162,11 @@ function ValidateWeedCoord(plantCoord)
 	end
 end
 
-function GenerateWeedCoords()
+function GenerateCokeCoords()
 	while true do
 		Wait(0)
 
-		local weedCoordX, weedCoordY
+		local cokeCoordX, cokeCoordY
 
 		math.randomseed(GetGameTimer())
 		local modX = math.random(-90, 90)
@@ -176,13 +176,13 @@ function GenerateWeedCoords()
 		math.randomseed(GetGameTimer())
 		local modY = math.random(-90, 90)
 
-		weedCoordX = Config.CircleZones.WeedField.coords.x + modX
-		weedCoordY = Config.CircleZones.WeedField.coords.y + modY
+		cokeCoordX = Config.CircleZones.CokeField.coords.x + modX
+		cokeCoordY = Config.CircleZones.CokeField.coords.y + modY
 
-		local coordZ = GetCoordZ(weedCoordX, weedCoordY)
-		local coord = vector3(weedCoordX, weedCoordY, coordZ)
+		local coordZ = GetCoordZ(cokeCoordX, cokeCoordY)
+		local coord = vector3(cokeCoordX, cokeCoordY, coordZ)
 
-		if ValidateWeedCoord(coord) then
+		if ValidateCokeCoord(coord) then
 			return coord
 		end
 	end

@@ -1,4 +1,4 @@
-# HW Scripts - Weed
+# HW Scripts - Coke
 
 **Description**
 
@@ -33,14 +33,14 @@ Follow these steps to set up the Weed Farm and Selling script on your ESX server
 
 1. **Download the Files**: Download the script files from the provided source.
 
-2. **Copy to Server Resource Directory**: Place the `hw_weed` folder in the server resource directory.
+2. **Copy to Server Resource Directory**: Place the `hw_coke` folder in the server resource directory.
 
 3. **Update `server.cfg`**: Add the following line to your `server.cfg` file:
 
     ```cfg
-    start hw_weed
+    start hw_coke
     ```
 
-4. **Start Your Server**: Restart or start your ESX server to load the `hw_weed` resource.
+4. **Start Your Server**: Restart or start your ESX server to load the `hw_coke` resource.
 
 Enjoy the script! <3

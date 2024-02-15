@@ -88,7 +88,7 @@ function OpenDrugShop()
 
 		ESX.OpenContext("right", elements2, function(menu2,element2)
 			ESX.CloseContext()
-			TriggerServerEvent('hw_weed:sellDrug',tostring(element.name),tonumber(menu2.eles[2].inputValue))
+			TriggerServerEvent('hw_coke:sellDrug',tostring(element.name),tonumber(menu2.eles[2].inputValue))
 		end, function(menu)
 			menuOpen = false
 		end)
@@ -115,7 +115,7 @@ function OpenBuyLicenseMenu(licenseName)
 	}
 
 	ESX.OpenContext("right", elements, function(menu,element)
-		ESX.TriggerServerCallback('hw_weed:buyLicense', function(boughtLicense)
+		ESX.TriggerServerCallback('hw_coke:buyLicense', function(boughtLicense)
 			if boughtLicense then
 				ESX.CloseContext()
 				ESX.ShowNotification(TranslateCap('license_bought', element.licenseName, ESX.Math.GroupDigits(element.price)))

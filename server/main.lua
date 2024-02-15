@@ -1,16 +1,16 @@
-local playersProcessingCannabis = {}
+local playersProcessingCoke = {}
 local outofbound = true
 local alive = true
 
-local function ValidatePickupCannabis(src)
-	local ECoords = Config.CircleZones.WeedField.coords
+local function ValidatePickupCoke(src)
+	local ECoords = Config.CircleZones.CokeField.coords
 	local PCoords = GetEntityCoords(GetPlayerPed(src)) 
 	local Dist = #(PCoords-ECoords)
 	if Dist <= 90 then return true end
 end
 
-local function ValidateProcessCannabis(src)
-	local ECoords = Config.CircleZones.WeedProcessing.coords
+local function ValidateProcessCoke(src)
+	local ECoords = Config.CircleZones.CokeProcessing.coords
 	local PCoords = GetEntityCoords(GetPlayerPed(src))
 	local Dist = #(PCoords-ECoords)
 	if Dist <= 5 then return true end
@@ -38,8 +38,8 @@ function SendDiscordLog(name, message, color)
     PerformHttpRequest(Config.WebhookURL, function(err, text, headers) end, 'POST', json.encode({username = "Server Logs", embeds = embed}), { ['Content-Type'] = 'application/json' })
 end
 
-RegisterServerEvent('hw_weed:sellDrug')
-AddEventHandler('hw_weed:sellDrug', function(itemName, amount)
+RegisterServerEvent('hw_coke:sellDrug')
+AddEventHandler('hw_coke:sellDrug', function(itemName, amount)
     local xPlayer = ESX.GetPlayerFromId(source)
     local price = Config.DrugDealerItems[itemName]
     local xItem = xPlayer.getInventoryItem(itemName)
@@ -77,7 +77,7 @@ AddEventHandler('hw_weed:sellDrug', function(itemName, amount)
     end
 end)
 
-ESX.RegisterServerCallback('hw_weed:buyLicense', function(source, cb, licenseName)
+ESX.RegisterServerCallback('hw_coke:buyLicense', function(source, cb, licenseName)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local license = Config.LicensePrices[licenseName]
 
@@ -97,123 +97,123 @@ ESX.RegisterServerCallback('hw_weed:buyLicense', function(source, cb, licenseNam
 			cb(false)
 		end
 	else
-		print(('hw_weed: %s attempted to buy an invalid license!'):format(xPlayer.identifier))
+		print(('hw_coke: %s attempted to buy an invalid license!'):format(xPlayer.identifier))
 		cb(false)
 	end
 end)
 
-RegisterServerEvent('hw_weed:pickedUpCannabis')
-AddEventHandler('hw_weed:pickedUpCannabis', function()
+RegisterServerEvent('hw_coke:pickedUpCoke')
+AddEventHandler('hw_coke:pickedUpCoke', function()
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
     local cime = math.random(5,10)
-    if ValidatePickupCannabis(src) then
-        if xPlayer.canCarryItem('cannabis', cime) then
-            xPlayer.addInventoryItem('cannabis', cime)
-            SendDiscordLog("Cannabis Pickup", ('%s picked up %s cannabis'):format(xPlayer.identifier, cime), 65280)
+    if ValidatePickupCoke(src) then
+        if xPlayer.canCarryItem('coke', cime) then
+            xPlayer.addInventoryItem('coke', cime)
+            SendDiscordLog("Coke Pickup", ('%s picked up %s coke'):format(xPlayer.identifier, cime), 65280)
 
             if Config.Debug then
-                print("^7[^1DEBUG^7]A player picked up cannabis")
+                print("^7[^1DEBUG^7]A player picked up coke")
             end
 
         else
-            xPlayer.showNotification(TranslateCap('weed_inventoryfull'))
+            xPlayer.showNotification(TranslateCap('coke_inventoryfull'))
         end
     else
-        FoundExploiter(src, 'Cannabis Pickup Trigger')
+        FoundExploiter(src, 'Coke Pickup Trigger')
     end
 end)
 
-ESX.RegisterServerCallback('hw_weed:canPickUp', function(source, cb, item)
+ESX.RegisterServerCallback('hw_coke:canPickUp', function(source, cb, item)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	cb(xPlayer.canCarryItem(item, 1))
 end)
 
-RegisterServerEvent('hw_weed:outofbound')
-AddEventHandler('hw_weed:outofbound', function()
+RegisterServerEvent('hw_coke:outofbound')
+AddEventHandler('hw_coke:outofbound', function()
 	outofbound = true
 end)
 
-ESX.RegisterServerCallback('hw_weed:cannabis_count', function(source, cb)
+ESX.RegisterServerCallback('hw_coke:coke_count', function(source, cb)
 	local xPlayer = ESX.GetPlayerFromId(source)
-	local xCannabis = xPlayer.getInventoryItem('cannabis').count
-	cb(xCannabis)
+	local xCoke = xPlayer.getInventoryItem('coke').count
+	cb(xCoke)
 end)
 
-RegisterServerEvent('hw_weed:processCannabis')
-AddEventHandler('hw_weed:processCannabis', function()
+RegisterServerEvent('hw_coke:processCoke')
+AddEventHandler('hw_coke:processCoke', function()
     local _source = source
     local xPlayer = ESX.GetPlayerFromId(_source)
     
     -- Validate the player is in the processing area
-    if ValidateProcessCannabis(_source) then
-        -- Ensure the player has enough cannabis to start processing
-        if xPlayer.getInventoryItem('cannabis').count >= 3 then
+    if ValidateProcessCoke(_source) then
+        -- Ensure the player has enough coke to start processing
+        if xPlayer.getInventoryItem('coke').count >= 3 then
             -- Flag this player as processing
-            if not playersProcessingCannabis[_source] then
-                playersProcessingCannabis[_source] = true
+            if not playersProcessingCoke[_source] then
+                playersProcessingCoke[_source] = true
                 
                 -- Inform the player processing has started
-                xPlayer.showNotification(TranslateCap('weed_processing_started'))
+                xPlayer.showNotification(TranslateCap('coke_processing_started'))
 
                 -- Start processing loop
                 Citizen.CreateThread(function()
-                    while playersProcessingCannabis[_source] do
-                        Citizen.Wait(Config.Delays.WeedProcessing)
-                        if xPlayer.getInventoryItem('cannabis').count >= 3 then
-                            if xPlayer.canSwapItem('cannabis', 3, 'marijuana', 1) then
-                                xPlayer.removeInventoryItem('cannabis', 3)
-                                xPlayer.addInventoryItem('marijuana', 1)
-                                SendDiscordLog("Cannabis Processed", ('%s processed cannabis into marijuana'):format(xPlayer.identifier), 65280)
+                    while playersProcessingCoke[_source] do
+                        Citizen.Wait(Config.Delays.CokeProcessing)
+                        if xPlayer.getInventoryItem('coke').count >= 3 then
+                            if xPlayer.canSwapItem('coke', 3, 'pure_coke', 1) then
+                                xPlayer.removeInventoryItem('coke', 3)
+                                xPlayer.addInventoryItem('pure_coke', 1)
+                                SendDiscordLog("Coke Processed", ('%s processed coke into pure_coke'):format(xPlayer.identifier), 65280)
 
                                 if Config.Debug then
-                                    print("^7[^1DEBUG^7]A player processed cannabis into marijuana")
+                                    print("^7[^1DEBUG^7]A player processed coke into marijuana")
                                 end
 
                             else
-                                xPlayer.showNotification(TranslateCap('weed_processingfull'))
-                                playersProcessingCannabis[_source] = false
+                                xPlayer.showNotification(TranslateCap('coke_processingfull'))
+                                playersProcessingCoke[_source] = false
                             end
                         else
-                            xPlayer.showNotification(TranslateCap('weed_processingenough'))
-                            playersProcessingCannabis[_source] = false
+                            xPlayer.showNotification(TranslateCap('coke_processingenough'))
+                            playersProcessingCoke[_source] = false
                         end
                     end
                 end)
             end
         else
-            xPlayer.showNotification(TranslateCap('weed_processingenough'))
+            xPlayer.showNotification(TranslateCap('coke_processingenough'))
         end
     else
-        FoundExploiter(_source, 'Cannabis Processing Trigger')
+        FoundExploiter(_source, 'Coke Processing Trigger')
     end
 end)
 
 function CancelProcessing(playerId)
-	if playersProcessingCannabis[playerId] then
-		ESX.ClearTimeout(playersProcessingCannabis[playerId])
-		playersProcessingCannabis[playerId] = nil
+	if playersProcessingCoke[playerId] then
+		ESX.ClearTimeout(playersProcessingCoke[playerId])
+		playersProcessingCoke[playerId] = nil
 	end
 end
 
-RegisterServerEvent('hw_weed:stopProcessing')
-AddEventHandler('hw_weed:stopProcessing', function()
+RegisterServerEvent('hw_coke:stopProcessing')
+AddEventHandler('hw_coke:stopProcessing', function()
     local _source = source
-    if playersProcessingCannabis[_source] then
-        playersProcessingCannabis[_source] = false
-        SendDiscordLog("Processing Stopped", ('%s stopped processing cannabis.'):format(ESX.GetPlayerFromId(_source).identifier), 65280)
+    if playersProcessingCoke[_source] then
+        playersProcessingCoke[_source] = false
+        SendDiscordLog("Processing Stopped", ('%s stopped processing coke.'):format(ESX.GetPlayerFromId(_source).identifier), 65280)
 
         if Config.Debug then
-            print("^7[^1DEBUG^7]A player stopped the processing of cannabis.")
+            print("^7[^1DEBUG^7]A player stopped the processing of coke.")
         end
 
     end
 end)
 
-RegisterServerEvent('hw_weed:cancelProcessing')
-AddEventHandler('hw_weed:cancelProcessing', function()
+RegisterServerEvent('hw_coke:cancelProcessing')
+AddEventHandler('hw_coke:cancelProcessing', function()
 	CancelProcessing(source)
-	SendDiscordLog("Cannabis Cancel", ('%s canceled cannabis progress'):format(xPlayer.identifier), 65280)
+	SendDiscordLog("Coke Cancel", ('%s canceled coke progress'):format(xPlayer.identifier), 65280)
 end)
 
 AddEventHandler('esx:playerDropped', function(playerId, reason)

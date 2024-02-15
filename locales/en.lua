@@ -1,15 +1,15 @@
 Locales ['en'] = {
-  -- weed
-  ['weed_pickupprompt'] = 'press [E] to harvest the Cannabis plant.',
-  ['weed_quitprocess'] = 'press [E] to stop Process Cannabis.',
-  ['weed_inventoryfull'] = 'you do not have any more inventory space for Cannabis.',
-  ['weed_processprompt'] = 'press [E] to start Process Cannabis.',
-  ['weed_processingstarted'] = 'processing Cannabis into Marijuana...',
-  ['weed_processing_started'] = 'u started cooking...',
-  ['weed_processingfull'] = 'processing ~r~canceled due to full inventory!',
-  ['weed_processingenough'] = 'you must have 3x Cannabis in order to process.',
-  ['weed_processed'] = 'you\'ve processed 3x Cannabis to 1x Marijuana',
-  ['weed_processingtoofar'] = 'the processing has been ~r~canceled due to you abandoning the area.',
+  -- coke
+  ['coke_pickupprompt'] = 'press [E] to harvest the Cannabis plant.',
+  ['coke_quitprocess'] = 'press [E] to stop Process Cannabis.',
+  ['coke_inventoryfull'] = 'you do not have any more inventory space for Cannabis.',
+  ['coke_processprompt'] = 'press [E] to start Process Cannabis.',
+  ['coke_processingstarted'] = 'processing Cannabis into Marijuana...',
+  ['coke_processing_started'] = 'u started cooking...',
+  ['coke_processingfull'] = 'processing ~r~canceled due to full inventory!',
+  ['coke_processingenough'] = 'you must have 3x Cannabis in order to process.',
+  ['coke_processed'] = 'you\'ve processed 3x Cannabis to 1x Marijuana',
+  ['coke_processingtoofar'] = 'the processing has been ~r~canceled due to you abandoning the area.',
 
   -- drug dealer
   ['dealer_prompt'] = 'press [E] to talk with the ~r~Drug Dealer.',
@@ -23,10 +23,10 @@ Locales ['en'] = {
   ['license_no'] = 'no',
   ['license_bought'] = 'you bought the %s for ~r~$%s',
   ['license_bought_fail'] = 'you cannot afford an %s!',
-  ['license_weed'] = 'weed Processing License',
+  ['license_coke'] = 'coke Processing License',
 
   -- blips
-  ['blip_weedfield'] = 'weed Field',
-  ['blip_weedprocessing'] = 'weed Processing',
+  ['blip_cokefield'] = 'coke Field',
+  ['blip_cokeprocessing'] = 'coke Processing',
   ['blip_drugdealer'] = 'drug Dealer',
 }
