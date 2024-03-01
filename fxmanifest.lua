@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 
 author 'HenkW'
-description 'Simple coke script'
+description 'Simple coke script for harvesting, processing and selling'
 
 version '1.0.1'
 
