@@ -5,7 +5,7 @@ lua54 'yes'
 author 'HenkW'
 description 'Simple coke script for harvesting, processing and selling'
 
-version '1.0.3'
+version '1.0.4'
 
 shared_script '@es_extended/imports.lua'
 
